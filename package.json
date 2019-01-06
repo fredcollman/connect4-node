@@ -6,7 +6,7 @@
   "module": "dist/bundle.esm.js",
   "author": "Fred Collman <fredcollman@gmail.com>",
   "license": "MIT",
-  "repository": "fredcollman/@fred.c/connect4",
+  "repository": "fredcollman/connect4-node",
   "bin": {
     "connect4": "bin/main.js"
   },
