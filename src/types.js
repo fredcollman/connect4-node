@@ -1,8 +1,15 @@
 //@flow
-type Player = "RED" | "YELLOW";
+export opaque type Player = "RED" | "YELLOW";
+export const RED: Player = "RED";
+export const YELLOW: Player = "YELLOW";
+
 type Result = "Red wins" | "Yellow wins" | "Draw" | null;
-type Board = (?Player)[][];
-type Column = number;
+export type Column = number;
+export type Board = {
+  width: number,
+  height: number,
+  column: Column => Player[],
+};
 type GameState = {
   board: Board,
   player: Player,
