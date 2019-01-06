@@ -36,4 +36,27 @@ describe("placeDisc", () => {
       .placeDisc(YELLOW, 4);
     expect(board.column(4)).to.deep.equal([RED, YELLOW]);
   });
+
+  it("can place discs in different columns", () => {
+    const board = newBoard({ width: 8, height: 5 })
+      .placeDisc(RED, 2)
+      .placeDisc(YELLOW, 3);
+    expect(board.column(2)).to.deep.equal([RED]);
+    expect(board.column(3)).to.deep.equal([YELLOW]);
+  });
+
+  it("fails if column is already full", () => {
+    const board = Array(5)
+      .fill(null)
+      .reduce(
+        board => board.placeDisc(RED, 3),
+        newBoard({ width: 8, height: 5 })
+      );
+    expect(() => board.placeDisc(RED, 3)).to.throw();
+  });
+
+  it("fails if column is out of bounds", () => {
+    const board = newBoard({ width: 4, height: 6 });
+    expect(() => board.placeDisc(RED, 5)).to.throw();
+  });
 });

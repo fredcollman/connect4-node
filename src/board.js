@@ -9,30 +9,31 @@ const createBoard = ({ height, width, contents }): Board => {
     width,
     column: columnNumber => contents[columnNumber - 1],
     placeDisc: function(player, column) {
-      return createBoard({
-        height,
-        width,
-        contents: Array(width)
-          .fill(null)
-          .map((col, idx) =>
-            column === idx + 1
-              ? [...this.column(idx + 1), player]
-              : this.column(idx + 1)
-          ),
+      if (column < 0 || column >= width) {
+        throw new Error(`Invalid column`);
+      }
+      const newContents = contents.map((col, idx) => {
+        if (column === idx + 1) {
+          const existing = contents[idx];
+          if (existing.length >= height) {
+            throw new Error(`Column ${column} is already full`);
+          }
+          return [...existing, player];
+        }
+        return contents[idx];
       });
+      return createBoard({ height, width, contents: newContents });
     },
   };
 };
 
-const newBoard = ({ height, width }: BoardDimensions): Board => {
-  // const
-  return createBoard({
+const newBoard = ({ height, width }: BoardDimensions): Board =>
+  createBoard({
     height,
     width,
     contents: Array(width)
       .fill(null)
       .map(() => []),
   });
-};
 
 export { newBoard };
