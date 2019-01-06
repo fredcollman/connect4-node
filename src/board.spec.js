@@ -1,6 +1,6 @@
 // @flow
 import chai from "chai";
-import { newBoard, placeDisc } from "./board";
+import { newBoard } from "./board";
 import { RED, YELLOW } from "./types";
 
 const { expect } = chai;
@@ -20,21 +20,20 @@ describe("newBoard", () => {
 
 describe("placeDisc", () => {
   it("places a disc in the specified column", () => {
-    const board0 = newBoard({ width: 8, height: 5 });
-    const board1 = placeDisc(RED, 4, board0);
-    expect(board1.column(4)).to.deep.equal([RED]);
+    const board = newBoard({ width: 8, height: 5 }).placeDisc(RED, 4);
+    expect(board.column(4)).to.deep.equal([RED]);
   });
 
   it("does not modify the input board", () => {
     const board0 = newBoard({ width: 8, height: 5 });
-    const board1 = placeDisc(RED, 4, board0);
+    const board1 = board0.placeDisc(RED, 4);
     expect(board1).not.to.equal(board0);
   });
 
   it("can place multiple discs in the same column", () => {
-    const board0 = newBoard({ width: 8, height: 5 });
-    const board1 = placeDisc(RED, 4, board0);
-    const board2 = placeDisc(YELLOW, 4, board1);
-    expect(board2.column(4)).to.deep.equal([RED, YELLOW]);
+    const board = newBoard({ width: 8, height: 5 })
+      .placeDisc(RED, 4)
+      .placeDisc(YELLOW, 4);
+    expect(board.column(4)).to.deep.equal([RED, YELLOW]);
   });
 });

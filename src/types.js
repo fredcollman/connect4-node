@@ -9,6 +9,7 @@ export type Board = {
   width: number,
   height: number,
   column: Column => Player[],
+  placeDisc: (Player, Column) => Board,
 };
 type GameState = {
   board: Board,
