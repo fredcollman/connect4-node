@@ -14,14 +14,13 @@ const main = async () => {
   // $FlowFixMe - asyncIterator still behind a flag
   const inputLines = chunksToLines(process.stdin);
   let state = newState();
-  console.log(state);
+  state.forEach(console.log);
   for await (const line of inputLines) {
-    try {
-      state = state.flatMap(move(sanitise(line)));
-      state.cata(e => console.error(e), g => console.log(g));
-    } catch (e) {
+    state = state.flatMap(move(sanitise(line))).catchMap(e => {
       console.error(e);
-    }
+      return state;
+    });
+    state.forEach(console.log);
   }
   console.log("Done");
 };

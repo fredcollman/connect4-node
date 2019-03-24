@@ -12,7 +12,7 @@ export type Game = { player: Player, board: Board };
 const HEIGHT = 6;
 const WIDTH = 7;
 
-export const newGame = (): Game => ({
+const newGame = (): Game => ({
   player: RED,
   board: R.times(() => [], WIDTH),
 });

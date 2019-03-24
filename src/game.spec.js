@@ -2,18 +2,18 @@
 import chai from "chai";
 import R from "ramda";
 import { Either } from "monet";
-import { newGame, RED, YELLOW, placeDisc, move } from "./game";
+import { newState, RED, YELLOW, placeDisc, move } from "./game";
 
 const { expect } = chai;
 
-describe("newGame", () => {
+describe("newState", () => {
   it("initially is Red's turn", () => {
-    const game = newGame();
+    const game = newState().right();
     expect(game.player).to.equal(RED);
   });
 
   it("initially has no discs", () => {
-    const game = newGame();
+    const game = newState().right();
     expect(game.board).to.deep.equal([[], [], [], [], [], [], []]);
   });
 });
@@ -56,24 +56,26 @@ describe("placeDisc", () => {
 
 describe("move", () => {
   it("switches from RED to YELLOW", () => {
-    const game = newGame();
-    const result = move(1, game);
+    const result = newState().flatMap(move(1));
     expect(result.right().player).to.equal(YELLOW);
   });
 
   it("switches back to RED after a second move", () => {
-    const result = move(1, newGame()).flatMap(move(1));
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(1));
     expect(result.right().player).to.equal(RED);
   });
 
   it("places a disc in the board", () => {
-    const game = newGame();
-    const result = move(1, newGame());
+    const result = newState().flatMap(move(1));
     expect(result.right().board).to.deep.equal([[RED], [], [], [], [], [], []]);
   });
 
   it("places the current player's disc in the board", () => {
-    const result = move(1, newGame()).flatMap(move(1));
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(1));
     expect(result.right().board).to.deep.equal([
       [RED, YELLOW],
       [],
@@ -86,12 +88,12 @@ describe("move", () => {
   });
 
   it("fails if column is out of bounds", () => {
-    const result = move(19, newGame());
+    const result = newState().flatMap(move(19));
     expect(result).to.deep.equal(Either.left("Column 19 out of bounds"));
   });
 
   it("fails if the column is full", () => {
-    const result = move(1, newGame())
+    const result = newState()
       .flatMap(move(1))
       .flatMap(move(1))
       .flatMap(move(1))
