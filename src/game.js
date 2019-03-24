@@ -1,21 +1,15 @@
 // @flow
 import R, { type CurriedFunction3, type CurriedFunction2 } from "ramda";
 import { Either } from "monet";
-
-opaque type Player = "RED" | "YELLOW";
-export const RED: Player = "RED";
-export const YELLOW: Player = "YELLOW";
-
-type Board = (?Player)[][];
-export type Game = {
-  player: Player,
-  board: Board,
-  winner: ?Player,
-  remainingMoves: number,
-};
-
-const HEIGHT = 6;
-const WIDTH = 7;
+import {
+  RED,
+  YELLOW,
+  HEIGHT,
+  WIDTH,
+  type Player,
+  type Board,
+  type Game,
+} from "./constants";
 
 const newGame = (): Game => ({
   player: RED,

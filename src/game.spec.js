@@ -2,7 +2,8 @@
 import chai from "chai";
 import R from "ramda";
 import { Either } from "monet";
-import { newState, RED, YELLOW, placeDisc, move, checkWin } from "./game";
+import { newState, placeDisc, move, checkWin } from "./game";
+import { RED, YELLOW } from "./constants";
 
 const { expect } = chai;
 
