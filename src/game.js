@@ -46,22 +46,32 @@ const _placeDisc = (
 
 export const placeDisc: CurriedFunction3<*, *, *, *> = R.curry(_placeDisc);
 
-const _move = (column: number, game: Game): Either<string, Game> =>
-  placeDisc(game.player, column, game.board).map(
+const _move = (column: number, game: Game): Either<string, Game> => {
+  if (game.winner) return Either.left(`${game.winner} has already won`);
+  return placeDisc(game.player, column, game.board).map(
     (board): Game => ({
       player: game.player === RED ? YELLOW : RED,
       board,
       winner: checkWin(board, column - 1) ? game.player : null,
     })
   );
+};
 
 export const move: CurriedFunction2<*, *, *> = R.curry(_move);
 
 export const checkWin = (board: Board, idx: number) => {
   const player = R.last(board[idx]);
+  const rowIdx = board[idx].length - 1;
+  const row = board.map(col => col[rowIdx]);
   const colExtent = extentBack(board[idx], player);
-  return colExtent >= 4;
+  const rowExtent =
+    extentBack(row.slice(0, idx), player) +
+    extentForward(row.slice(idx), player);
+  return R.max(colExtent, rowExtent) >= 4;
 };
 
 const extentBack = (items, compareTo) =>
   R.takeLastWhile(R.equals(compareTo), items).length;
+
+const extentForward = (items, compareTo) =>
+  R.takeWhile(R.equals(compareTo), items).length;

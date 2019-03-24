@@ -86,7 +86,37 @@ describe("checkWin", () => {
   it("is not a win if there is a gap", () => {
     const noWin = [RED, RED, RED, YELLOW, RED];
     const board = [noWin, [], []];
+    expect(checkWin(board, 0)).to.be.false;
+  });
+
+  it("can be a horizontal win", () => {
+    const board = [[RED], [RED], [RED], [RED], [], [], []];
+    expect(checkWin(board, 3)).to.be.true;
+  });
+
+  it("can be a horizontal win on either side", () => {
+    const board = [[RED], [RED], [RED], [RED], [], [], []];
+    expect(checkWin(board, 1)).to.be.true;
+  });
+
+  it("begins looking in the right column", () => {
+    const board = [[YELLOW], [], [RED], [RED], [RED], [RED], []];
+    expect(checkWin(board, 3)).to.be.true;
+  });
+
+  it("requires four in a row for horizontal win", () => {
+    const board = [[YELLOW], [], [RED], [RED], [RED], [], []];
+    expect(checkWin(board, 3)).to.be.false;
+  });
+
+  it("is not a horizontal win if there is a gap", () => {
+    const board = [[RED], [RED], [RED], [YELLOW], [RED], [], [], []];
     expect(checkWin(board, 1)).to.be.false;
+  });
+
+  it("does not loop around", () => {
+    const board = [[RED], [RED], [], [], [], [], [RED], [RED]];
+    expect(checkWin(board, 0)).to.be.false;
   });
 });
 
@@ -173,5 +203,18 @@ describe("move", () => {
       .flatMap(move(2))
       .flatMap(move(1));
     expect(result.right().winner).to.be.null;
+  });
+
+  it("prevents further moves after winner decided", () => {
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2));
+    expect(result).to.deep.equal(Either.left("RED has already won"));
   });
 });
