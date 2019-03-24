@@ -60,18 +60,32 @@ const _move = (column: number, game: Game): Either<string, Game> => {
 export const move: CurriedFunction2<*, *, *> = R.curry(_move);
 
 export const checkWin = (board: Board, idx: number) => {
-  const player = R.last(board[idx]);
   const rowIdx = board[idx].length - 1;
-  const row = board.map(col => col[rowIdx]);
-  const colExtent = extentBack(board[idx], player);
+  const position = [idx, board[idx].length - 1];
   const rowExtent =
-    extentBack(row.slice(0, idx), player) +
-    extentForward(row.slice(idx), player);
-  return R.max(colExtent, rowExtent) >= 4;
+    extent(board, [0, -1], position) + extent(board, [0, 1], position) - 1;
+  const colExtent = extent(board, [-1, 0], position);
+  const upwardsExtent =
+    extent(board, [1, 1], position) + extent(board, [-1, -1], position) - 1;
+  const downwardsExtent =
+    extent(board, [1, -1], position) + extent(board, [-1, 1], position) - 1;
+  return R.any(R.lte(4), [
+    colExtent,
+    rowExtent,
+    upwardsExtent,
+    downwardsExtent,
+  ]);
 };
 
-const extentBack = (items, compareTo) =>
-  R.takeLastWhile(R.equals(compareTo), items).length;
-
-const extentForward = (items, compareTo) =>
-  R.takeWhile(R.equals(compareTo), items).length;
+const extent = (board, direction, initial) => {
+  const [up, right] = direction;
+  let [col, row] = initial;
+  let compareTo = board[col][row];
+  let count = 0;
+  while ((board[col] || [])[row] === compareTo) {
+    count++;
+    col += right;
+    row += up;
+  }
+  return count;
+};

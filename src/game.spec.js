@@ -118,6 +118,62 @@ describe("checkWin", () => {
     const board = [[RED], [RED], [], [], [], [], [RED], [RED]];
     expect(checkWin(board, 0)).to.be.false;
   });
+
+  it("can be an upwards diagonal win", () => {
+    const board = [
+      [RED],
+      [YELLOW, RED],
+      [YELLOW, YELLOW, RED],
+      [YELLOW, YELLOW, YELLOW, RED],
+      [],
+      [],
+      [],
+      [],
+    ];
+    expect(checkWin(board, 0)).to.be.true;
+  });
+
+  it("can be an upwards diagonal win looking both ways", () => {
+    const board = [
+      [RED],
+      [YELLOW, RED],
+      [YELLOW, YELLOW, RED],
+      [YELLOW, YELLOW, YELLOW, RED],
+      [],
+      [],
+      [],
+      [],
+    ];
+    expect(checkWin(board, 2)).to.be.true;
+  });
+
+  it("is not a diagnonal win if there is a gap", () => {
+    const board = [
+      [RED],
+      [YELLOW, RED],
+      [YELLOW, YELLOW, RED],
+      [YELLOW, YELLOW, RED, YELLOW],
+      [YELLOW, YELLOW, RED, YELLOW, RED],
+      [],
+      [],
+      [],
+    ];
+    expect(checkWin(board, 2)).to.be.false;
+  });
+
+  it("can be an downwards diagonal win looking both ways", () => {
+    const board = [
+      [YELLOW, YELLOW, YELLOW, RED],
+      [YELLOW, YELLOW, RED],
+      [YELLOW, RED],
+      [RED],
+      [],
+      [],
+      [],
+      [],
+    ];
+    expect(checkWin(board, 2)).to.be.true;
+  });
 });
 
 describe("move", () => {
