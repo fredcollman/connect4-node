@@ -7,7 +7,7 @@ export const RED: Player = "RED";
 export const YELLOW: Player = "YELLOW";
 
 type Board = (?Player)[][];
-type Game = { player: Player, board: Board };
+export type Game = { player: Player, board: Board };
 
 const HEIGHT = 6;
 const WIDTH = 7;
@@ -16,6 +16,8 @@ export const newGame = (): Game => ({
   player: RED,
   board: R.times(() => [], WIDTH),
 });
+
+export const newState = (): Either<string, Game> => Either.of(newGame());
 
 const isValidColumn = (index, count) =>
   index >= 1 && index <= count && Math.floor(index) === index;
