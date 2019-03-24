@@ -2,7 +2,7 @@
 import chai from "chai";
 import R from "ramda";
 import { Either } from "monet";
-import { newState, RED, YELLOW, placeDisc, move } from "./game";
+import { newState, RED, YELLOW, placeDisc, move, checkWin } from "./game";
 
 const { expect } = chai;
 
@@ -15,6 +15,11 @@ describe("newState", () => {
   it("initially has no discs", () => {
     const game = newState().right();
     expect(game.board).to.deep.equal([[], [], [], [], [], [], []]);
+  });
+
+  it("initially has no winner", () => {
+    const game = newState().right();
+    expect(game.winner).to.be.null;
   });
 });
 
@@ -51,6 +56,37 @@ describe("placeDisc", () => {
     const fullColumn = R.repeat(RED, 6);
     const result = placeDisc(RED, 2, [[], fullColumn, []]);
     expect(result).to.deep.equal(Either.left("Column 2 is full"));
+  });
+});
+
+describe("checkWin", () => {
+  it("is false for an empty board", () => {
+    const board = [[RED], [], []];
+    expect(checkWin(board, 0)).to.be.false;
+  });
+
+  it("is true for simple column win", () => {
+    const winColumn = R.repeat(RED, 4);
+    const board = [winColumn, [], []];
+    expect(checkWin(board, 0)).to.be.true;
+  });
+
+  it("is true for a win in any column", () => {
+    const winColumn = R.repeat(YELLOW, 4);
+    const board = [[], [], winColumn, []];
+    expect(checkWin(board, 2)).to.be.true;
+  });
+
+  it("only checks the last play", () => {
+    const winColumn = R.repeat(RED, 4);
+    const board = [[], [YELLOW], winColumn, []];
+    expect(checkWin(board, 1)).to.be.false;
+  });
+
+  it("is not a win if there is a gap", () => {
+    const noWin = [RED, RED, RED, YELLOW, RED];
+    const board = [noWin, [], []];
+    expect(checkWin(board, 1)).to.be.false;
   });
 });
 
@@ -104,5 +140,38 @@ describe("move", () => {
       .flatMap(move(1))
       .flatMap(move(1));
     expect(result).to.deep.equal(Either.left("Column 1 is full"));
+  });
+
+  it("can be a column win for RED", () => {
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1));
+    expect(result.right().winner).to.equal(RED);
+  });
+
+  it("can be a column win for YELLOW", () => {
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(3))
+      .flatMap(move(2));
+    expect(result.right().winner).to.equal(YELLOW);
+  });
+
+  it("may not have a winner yet", () => {
+    const result = newState()
+      .flatMap(move(1))
+      .flatMap(move(2))
+      .flatMap(move(1));
+    expect(result.right().winner).to.be.null;
   });
 });
