@@ -7,7 +7,12 @@ export const RED: Player = "RED";
 export const YELLOW: Player = "YELLOW";
 
 type Board = (?Player)[][];
-export type Game = { player: Player, board: Board, winner: ?Player };
+export type Game = {
+  player: Player,
+  board: Board,
+  winner: ?Player,
+  remainingMoves: number,
+};
 
 const HEIGHT = 6;
 const WIDTH = 7;
@@ -16,6 +21,7 @@ const newGame = (): Game => ({
   player: RED,
   board: R.times(() => [], WIDTH),
   winner: null,
+  remainingMoves: WIDTH * HEIGHT,
 });
 
 export const newState = (): Either<string, Game> => Either.of(newGame());
@@ -48,11 +54,13 @@ export const placeDisc: CurriedFunction3<*, *, *, *> = R.curry(_placeDisc);
 
 const _move = (column: number, game: Game): Either<string, Game> => {
   if (game.winner) return Either.left(`${game.winner} has already won`);
+  if (!game.remainingMoves) return Either.left(`Game ended in a draw`);
   return placeDisc(game.player, column, game.board).map(
     (board): Game => ({
       player: game.player === RED ? YELLOW : RED,
       board,
       winner: checkWin(board, column - 1) ? game.player : null,
+      remainingMoves: game.remainingMoves - 1,
     })
   );
 };
