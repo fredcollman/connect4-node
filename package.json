@@ -41,6 +41,7 @@
     "rollup-plugin-babel": "^4.3.0"
   },
   "dependencies": {
+    "monet": "^0.9.0",
     "ramda": "^0.26.1"
   }
 }

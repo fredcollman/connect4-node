@@ -11,7 +11,7 @@ export type Board = {
   column: Column => Player[],
   placeDisc: (Player, Column) => Board,
 };
-type GameState = {
+export type GameState = {
   board: Board,
   player: Player,
   winner: ?Player,

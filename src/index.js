@@ -22,9 +22,7 @@ const initialState = (): State => ({
 
 const move = (state: State, position: Position): State => ({
   player: state.player === "Red" ? "Yellow" : "Red",
-  board: state.board.map((col, idx) =>
-    idx === position ? [...col, state.player] : col
-  ),
+  board: R.adjust(position - 1, col => [...col, state.player], state.board),
 });
 
 const main = async () => {
