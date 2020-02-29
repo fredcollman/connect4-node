@@ -12,19 +12,19 @@ const sanitise = line => {
   throw new Error(`Bad input: ${line}`);
 };
 
-const printState = state => state.map(formatGame).forEach(console.log)
+const printState = state => state.map(formatGame).forEach(console.log);
 
 const main = async () => {
   // $FlowFixMe - asyncIterator still behind a flag
   const inputLines = chunksToLines(process.stdin);
   let state = newState();
-  printState(state)
+  printState(state);
   for await (const line of inputLines) {
     state = state.flatMap(move(sanitise(line))).catchMap(e => {
       console.error(e);
       return state;
     });
-    printState(state)
+    printState(state);
   }
 };
 

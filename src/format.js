@@ -3,7 +3,15 @@ import R from "ramda";
 
 import { RED, YELLOW, WIDTH, HEIGHT, type Board, type Game } from "./constants";
 
-const formatCell = cell => (cell === RED ? "R" : cell === YELLOW ? "Y" : " ");
+const reset = "\x1b[0m";
+const fgRed = "\x1b[31m";
+const fgYellow = "\x1b[33m";
+
+const redCell = `${fgRed}R${reset}`;
+const yellowCell = `${fgYellow}Y${reset}`;
+
+const formatCell = cell =>
+  cell === RED ? redCell : cell === YELLOW ? yellowCell : " ";
 
 const formatRow = row => row.map(formatCell).join("");
 
